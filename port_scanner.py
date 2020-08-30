@@ -4,24 +4,21 @@ try:
 except:
     print('Something went wrong importing the traceback module...')
     input('\033[91mMake sure to report this bug to the developer!\033[0m')
-loadASCII, port, openPorts, serverIP, speed, portMin, portMax = ['--', '\\', '|', '/'], 1, 0, str(), float(), 0, 1
+loadASCII, port, openPorts, serverIP, speed, portMin, portMax = ['--', '\\', '|', '/'], 1, [], str(), float(), 0, 1
 try:
     from threading import Thread
     from time import sleep
     from socket import socket, gethostbyname, gaierror, error, timeout, AF_INET, SOCK_STREAM
     from ipaddress import IPv4Address
+    from datetime import datetime
     from sys import stdout
     from os import system as sys
-
     sys('')
 except:
     print('Something went wrong while importing certain modules for the scanner...')
     print('\033[91mMake sure to report this bug to the developer, \033[4m\033[1mwith the traceback!\033[0m\n')
     print_exc()
     input()
-def now():
-    import datetime
-    return datetime.datetime.now()
 def scanPort(_serverIP, _port):
     sock = socket(AF_INET, SOCK_STREAM)  # Creates socket with IPv4 address family and stream type
     sock.settimeout(0.1)  # Timeout of 5s
@@ -31,7 +28,6 @@ def scanPort(_serverIP, _port):
     sock.close()  # Closes the socket
 def scanServerPorts():
     try:
-        
         global port, openPorts
         port, openPorts = 1, []
 
@@ -45,7 +41,7 @@ def scanServerPorts():
                 while port < portMax:
                     if port % 1000 == 0:
                         sys('CLS')
-                        print(f"Scanning port no. \033[32m{port}")
+                        print(f"Scanning port no. \033[32m{port}\033[0m")
                     x = Thread(target=scanPort, args=(serverIP, port,))
                     x.start()
                     port += 1
@@ -66,7 +62,6 @@ def scanServerPorts():
                 print("Something went wrong while initiating new threads probably...")
                 print_exc()
                 input("Press any key to continue")
-
         host = input("Enter the Host IP/Name: ")
 
         def portInput():
@@ -115,21 +110,19 @@ def scanServerPorts():
 
         speedInput()
         portInput()
-        
-        n1 = now()
+
+        n1 = datetime.now()
 
         createConnection(host)
-
-        n2 = now()
-
+        n2 = datetime.now()
         print(f"Time taken: {-(n1 - n2).total_seconds()}s")  # Logs how long it took
-
         uchoice_loop = input("Type 'loop' to continue, just press enter to exit: ")
         if uchoice_loop.lower() == 'loop':
             sys("CLS")
             scanServerPorts()
     except:
         print('Something went wrong while initializing the scanner...')
+
         print('\033[91mMake sure to report this bug to the developer, \033[4m\033[1mwith the traceback!\033[0m\n')
         print_exc()
         input()
