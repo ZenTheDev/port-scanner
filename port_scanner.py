@@ -4,7 +4,7 @@ try:
 except:
     print('Something went wrong importing the traceback module...')
     input('\033[91mMake sure to report this bug to the developer!\033[0m')
-loadASCII, port, openPorts, serverIP, speed, portMin, portMax = ['--', '\\', '|', '/'], 1, [], str(), float(), 0, 1
+loadASCII, index, port, openPorts, serverIP, speed, portMin, portMax = ['-', '\\', '|', '/'], 0, 1, [], str(), float(), 0, 1
 try:
     from threading import Thread
     from time import sleep
@@ -33,7 +33,7 @@ def scanServerPorts():
 
         def createConnection(remoteServer):
             try:
-                global port, openPorts, serverIP, speed
+                global port, openPorts, serverIP, speed, index
                 try: IPv4Address(remoteServer)
                 except: serverIP = gethostbyname(remoteServer)  # Retrieves server internet protocol
                 else: serverIP = remoteServer
@@ -41,7 +41,9 @@ def scanServerPorts():
                 while port < portMax:
                     if port % 1000 == 0:
                         sys('CLS')
-                        print(f"Scanning port no. \033[32m{port}\033[0m")
+                        index += 1  # Incrementing index to show loading ascii art
+                        if index == 4: index = 0
+                        print(f"Scanning ports up to \033[32m{port + 1E3}\033[0m... \033[38;5;226m{loadASCII[index]}\033[0m")
                     x = Thread(target=scanPort, args=(serverIP, port,))
                     x.start()
                     port += 1
