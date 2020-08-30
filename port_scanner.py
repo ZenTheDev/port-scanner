@@ -29,7 +29,7 @@ def scanPort(_serverIP, _port):
     sock.close()  # Closes the socket
 def scanServerPorts():
     try:
-        n1 = datetime.now()
+        
         global index, port, openPorts, currentThread
         index, port, openPorts, currentThread = -1, 1, [], 0
 
@@ -82,6 +82,8 @@ def scanServerPorts():
                 portMax = int(portNum.split(' ')[1])
 
         portInput()
+        
+        n1 = datetime.now()
 
         createConnection(host)
 
