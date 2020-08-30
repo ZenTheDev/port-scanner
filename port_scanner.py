@@ -4,9 +4,9 @@ try:
 except:
     print('Something went wrong importing the traceback module...')
     input('\033[91mMake sure to report this bug to the developer!\033[0m')
-loadASCII, index, port, openPorts, currentThread, serverIP, speed, portMin, portMax = ['--', '\\', '|', '/'], -1, 1, [], 0, str(), float(), 0, 1
+loadASCII, port, openPorts, serverIP, speed, portMin, portMax = ['--', '\\', '|', '/'], 1, 0, str(), float(), 0, 1
 try:
-    import threading
+    from threading import Thread
     from time import sleep
     from socket import socket, gethostbyname, gaierror, error, timeout, AF_INET, SOCK_STREAM
     from ipaddress import IPv4Address
@@ -30,12 +30,12 @@ def scanPort(_serverIP, _port):
 def scanServerPorts():
     try:
         
-        global index, port, openPorts, currentThread
-        index, port, openPorts, currentThread = -1, 1, [], 0
+        global port, openPorts
+        port, openPorts = 1, []
 
         def createConnection(remoteServer):
             try:
-                global port, openPorts, serverIP, index
+                global port, openPorts, serverIP, speed
                 try: IPv4Address(remoteServer)
                 except: serverIP = gethostbyname(remoteServer)  # Retrieves server internet protocol
                 else: serverIP = remoteServer
@@ -44,9 +44,11 @@ def scanServerPorts():
                     if port % 1000 == 0:
                         sys('CLS')
                         print(f"Scanning port no. \033[32m{port}")
-                    x = threading.Thread(target=scanPort, args=(serverIP, port,))
+                    x = Thread(target=scanPort, args=(serverIP, port,))
                     x.start()
                     port += 1
+                    try: sleep(float(speed))
+                    except: sleep(0.005)
                 for openPort in openPorts:
                     print(f"\033[36m{openPort}\033[0m is open.")  # Logs which ports are open
             except gaierror:  # Host name is invalid
@@ -81,6 +83,35 @@ def scanServerPorts():
                 portMin = int(portNum.split(' ')[0])
                 portMax = int(portNum.split(' ')[1])
 
+        def speedInput():
+            global speed
+            speed = input("Enter the delay mode (slow, med, fast, ultra, null, custom i.e: '.023'), for help type '?' (use null for fastest results, if you are having problems use another value): ")
+            if speed == '?':
+                print("\n\033[1m\033[38;5;208mslow:\033[0m "
+                      + "has a delay of \033[1m0.05\033[0m, not recommended but very accurate.\n"
+                      + "\033[1m\033[38;5;226mmed:\033[0m "
+                      + "has a delay of \033[1m0.02\033[0m, okay but should mainly be used if you have a bad ISP.\n"
+                      + "\033[1m\033[38;5;118mfast:\033[0m "
+                      + "has a delay of \033[1m0.005\033[0m, use this if you are still having trouble.\n"
+                      + "\033[1m\033[38;5;63multra:\033[0m "
+                      + "has a delay of \033[1m0.003\033[0m, use this if you are having problems detecting every port.\n"
+                      + "\033[1m\033[38;5;124mnull:\033[0m "
+                      + "has \033[1m\033[38;5;196mno delay\033[0m, highly recommended(fastest results).\n")
+                speedInput()
+            if str(speed).lower() == "slow":
+                speed = .05
+            elif str(speed).lower() == "med":
+                speed = .02
+            elif str(speed).lower() == "fast":
+                speed = .005
+            elif str(speed).lower() == "ultra":
+                speed = .003
+            elif str(speed).lower() == 'null':
+                speed = 0
+            else:
+                speed = float(speed)
+
+        speedInput()
         portInput()
         
         n1 = datetime.now()
@@ -100,4 +131,6 @@ def scanServerPorts():
         print('\033[91mMake sure to report this bug to the developer, \033[4m\033[1mwith the traceback!\033[0m\n')
         print_exc()
         input()
+
+
 scanServerPorts()
