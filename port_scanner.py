@@ -6,7 +6,7 @@ except:
     input('\033[91mMake sure to report this bug to the developer!\033[0m')
 loadASCII, index, port, openPorts, currentThread, serverIP, speed, portMin, portMax = ['--', '\\', '|', '/'], -1, 1, [], 0, str(), float(), 0, 1
 try:
-    from threading import Thread, enumerate
+    import threading
     from time import sleep
     from socket import socket, gethostbyname, gaierror, error, timeout, AF_INET, SOCK_STREAM
     from ipaddress import IPv4Address
@@ -41,7 +41,11 @@ def scanServerPorts():
                 else: serverIP = remoteServer
                 port = portMin
                 while port < portMax:
-                    exec("t = Thread(target=scanPort, args=(serverIP, port,)); t.start()")  # Creates new thread
+                    if port % 1000 == 0:
+                        sys('CLS')
+                        print(f"Scanning port no. \033[32m{port}")
+                    x = threading.Thread(target=scanPort, args=(serverIP, port,))
+                    x.start()
                     port += 1
                 for openPort in openPorts:
                     print(f"\033[36m{openPort}\033[0m is open.")  # Logs which ports are open
@@ -78,7 +82,6 @@ def scanServerPorts():
                 portMax = int(portNum.split(' ')[1])
 
         portInput()
-        sys("CLS")
 
         createConnection(host)
 
