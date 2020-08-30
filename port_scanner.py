@@ -10,7 +10,6 @@ try:
     from time import sleep
     from socket import socket, gethostbyname, gaierror, error, timeout, AF_INET, SOCK_STREAM
     from ipaddress import IPv4Address
-    from datetime import datetime
     from sys import stdout
     from os import system as sys
 
@@ -20,6 +19,9 @@ except:
     print('\033[91mMake sure to report this bug to the developer, \033[4m\033[1mwith the traceback!\033[0m\n')
     print_exc()
     input()
+def now():
+    import datetime
+    return datetime.datetime.now()
 def scanPort(_serverIP, _port):
     sock = socket(AF_INET, SOCK_STREAM)  # Creates socket with IPv4 address family and stream type
     sock.settimeout(0.1)  # Timeout of 5s
@@ -114,11 +116,11 @@ def scanServerPorts():
         speedInput()
         portInput()
         
-        n1 = datetime.now()
+        n1 = now()
 
         createConnection(host)
 
-        n2 = datetime.now()
+        n2 = now()
 
         print(f"Time taken: {-(n1 - n2).total_seconds()}s")  # Logs how long it took
 
